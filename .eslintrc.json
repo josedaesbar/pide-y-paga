@@ -1,0 +1,10 @@
+{
+	"rules": {
+		// Other rules
+		"no-unused-vars": "off",
+		"@next/next/no-img-element": "off",
+		"react-hooks/rules-of-hooks": "off",
+		"react-hooks/exhaustive-deps": "off",
+		"react/no-unknown-property": "off"
+	}
+}
