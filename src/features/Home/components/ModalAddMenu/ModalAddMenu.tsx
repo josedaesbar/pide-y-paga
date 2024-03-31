@@ -82,34 +82,49 @@ export const ModalAddMenu = ({ onClose }: ModalAddMenuProps) => {
   };
 
   const getPDFThumbnail = async (file: any) => {
-    if (!file) return;
+    try {
+      if (!file) return;
 
-    const fileReader = new FileReader();
+      const fileReader = new FileReader();
 
-    fileReader.onload = async () => {
-      const buffer = fileReader.result;
-      const pdf = await getDocument({ data: buffer! }).promise;
-      const page = await pdf.getPage(1);
-      const scale = 0.5;
-      const viewport = page.getViewport({ scale });
+      fileReader.onload = async () => {
+        const buffer = fileReader.result;
+        const pdf = await getDocument({ data: buffer! }).promise;
+        const page = await pdf.getPage(1);
+        const scale = 0.5;
+        const viewport = page.getViewport({ scale });
 
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
 
-      await page.render({
-        canvasContext: context!,
-        viewport: viewport,
-      }).promise;
+        await page.render({
+          canvasContext: context!,
+          viewport: viewport,
+        }).promise;
 
-      const imageUrl = canvas.toDataURL("image/jpeg");
+        const imageUrl = canvas.toDataURL("image/jpeg");
 
-      setFilesToUpload([...filesToUpload, { type: "pdf", file: file }]);
-      setFilesThumbnails([...filesThumbnails, imageUrl]);
-    };
+        setFilesToUpload([...filesToUpload, { type: "pdf", file: file }]);
+        setFilesThumbnails([...filesThumbnails, imageUrl]);
+      };
 
-    fileReader.readAsArrayBuffer(file);
+      fileReader.readAsArrayBuffer(file);
+    } catch (error) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        setFilesToUpload([...filesToUpload, { type: "image", file: file }]);
+        setFilesThumbnails([...filesThumbnails, reader.result! as string]);
+      };
+
+      if (file) {
+        reader.readAsDataURL(file);
+      }
+
+      console.log("");
+    }
   };
 
   const mergePDFsAndImages = async () => {
