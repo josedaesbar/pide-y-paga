@@ -15,6 +15,8 @@ import axios from "axios";
 import { MenuType } from "../../../../types/api/SaveMenu";
 import { useAppDispatch, useAppSelector } from "../../../../redux";
 import { A_SET_MENU } from "../../../../redux/menus/actions";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 type ModalAddMenuProps = {
   onClose(): void;
@@ -132,39 +134,47 @@ export const ModalAddMenu = ({ onClose }: ModalAddMenuProps) => {
       }
 
       if (fileItem.type === "image") {
-        const imageUrl = URL.createObjectURL(fileItem.file);
-        const image = new Image();
-        image.src = imageUrl;
-        await new Promise((resolve) => {
-          image.onload = resolve;
-        });
+        console.log(fileItem.file.name);
+        if (fileItem.file.name.endsWith(".pdf")) {
+          const pdfBytes = await fileItem.file.arrayBuffer();
+          const pdfDoc = await PDFDocument.load(pdfBytes);
+          const copiedPages = await mergedDoc.copyPages(pdfDoc, pdfDoc.getPageIndices());
+          copiedPages.forEach((page) => mergedDoc.addPage(page));
+        } else {
+          const imageUrl = URL.createObjectURL(fileItem.file);
+          const image = new Image();
+          image.src = imageUrl;
+          await new Promise((resolve) => {
+            image.onload = resolve;
+          });
 
-        const imageData = await convertImageToPdf(image);
-        const pdfImage = await mergedDoc.embedPng(imageData);
+          const imageData = await convertImageToPdf(image);
+          const pdfImage = await mergedDoc.embedPng(imageData);
 
-        const imagePage = await mergedDoc.addPage();
-        const aspectRatio = image.width / image.height;
-        const maxWidth = imagePage.getSize().width - 100; // Ajustar según el margen deseado
-        const maxHeight = imagePage.getSize().height - 100; // Ajustar según el margen deseado
-        let width = image.width;
-        let height = image.height;
+          const imagePage = await mergedDoc.addPage();
+          const aspectRatio = image.width / image.height;
+          const maxWidth = imagePage.getSize().width - 100; // Ajustar según el margen deseado
+          const maxHeight = imagePage.getSize().height - 100; // Ajustar según el margen deseado
+          let width = image.width;
+          let height = image.height;
 
-        if (width > maxWidth || height > maxHeight) {
-          if (width / maxWidth > height / maxHeight) {
-            width = maxWidth;
-            height = width / aspectRatio;
-          } else {
-            height = maxHeight;
-            width = height * aspectRatio;
+          if (width > maxWidth || height > maxHeight) {
+            if (width / maxWidth > height / maxHeight) {
+              width = maxWidth;
+              height = width / aspectRatio;
+            } else {
+              height = maxHeight;
+              width = height * aspectRatio;
+            }
           }
-        }
 
-        imagePage.drawImage(pdfImage, {
-          x: (imagePage.getWidth() - width) / 2,
-          y: (imagePage.getHeight() - height) / 2,
-          width: width,
-          height: height,
-        });
+          imagePage.drawImage(pdfImage, {
+            x: (imagePage.getWidth() - width) / 2,
+            y: (imagePage.getHeight() - height) / 2,
+            width: width,
+            height: height,
+          });
+        }
       }
     }
 
@@ -323,6 +333,10 @@ export const ModalAddMenu = ({ onClose }: ModalAddMenuProps) => {
           },
         ]),
       );
+
+      toast.success("El menú se guardó con éxito", { autoClose: 2500 });
+      onClose();
+
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -391,6 +405,7 @@ export const ModalAddMenu = ({ onClose }: ModalAddMenuProps) => {
           accept=".pdf, .png, .jpg, .jpeg"
         />
       </div>
+      <ToastContainer />
     </ModalEmpty>
   );
 };
