@@ -3,22 +3,17 @@ import { Routes, BrowserRouter } from "react-router-dom";
 import { useAppSelector } from "../redux";
 import PrivateRoutes from "./privateRoutes";
 import { Home } from "../features/Home";
-import { Login } from "../features/Login";
+import { Menu } from "../features/Menu";
 
 const AppRoutes = () => {
-	const userStore = useAppSelector((v) => v.user);
-
-	return (
-		<BrowserRouter>
-			{userStore.user === null ? (
-				<Routes>
-					<Route path="*" element={<Login />}></Route>
-				</Routes>
-			) : (
-				<PrivateRoutes />
-			)}
-		</BrowserRouter>
-	);
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />}></Route>
+        <Route path="/menu/:id" element={<Menu />}></Route>
+      </Routes>
+    </BrowserRouter>
+  );
 };
 
 export default AppRoutes;

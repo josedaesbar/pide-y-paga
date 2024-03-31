@@ -1,0 +1,52 @@
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100dvw;
+  height: 1000dvh;
+
+  background-color: #1a1313;
+  opacity: 0.9;
+
+  z-index: 0;
+}
+
+.container {
+  position: relative;
+  z-index: 100;
+
+  width: 100%;
+  max-width: 800px;
+
+  height: min-content;
+  max-height: 85vh;
+
+  margin: 0 auto;
+
+  background-color: #ffeded;
+  border-radius: 8px;
+  overflow: hidden;
+
+  display: grid;
+  grid-template-rows: 50px 1fr;
+}
+
+.header {
+  width: 100%;
+  height: 50px;
+
+  background-color: #803d3d;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.content {
+  width: 100%;
+  height: 100%;
+  display: grid;
+
+  overflow-y: auto;
+}

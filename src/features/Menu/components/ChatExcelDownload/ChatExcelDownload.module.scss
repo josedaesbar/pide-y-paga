@@ -1,0 +1,36 @@
+.container {
+  width: max-content;
+  display: grid;
+  grid-template-columns: min-content max-content;
+  align-items: center;
+  margin-left: 50px;
+
+  cursor: pointer;
+
+  padding: 15px;
+  box-sizing: border-box;
+
+  border: 2px solid #803d3d;
+  border-radius: 8px;
+
+  column-gap: 20px;
+
+  & .icon {
+    width: 60px;
+    height: 60px;
+
+    & img {
+      width: inherit;
+      height: inherit;
+
+      object-fit: cover;
+    }
+  }
+
+  &:hover {
+    background-color: #f4dede;
+    transition-property: background-color;
+    transition-duration: 0.1s;
+    transition-timing-function: linear;
+  }
+}
