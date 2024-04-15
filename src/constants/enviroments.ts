@@ -1,1 +1,1 @@
-export const Authorization = "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";
+export const Authorization = "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";

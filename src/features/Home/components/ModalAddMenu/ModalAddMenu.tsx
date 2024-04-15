@@ -307,7 +307,7 @@ export const ModalAddMenu = ({ onClose }: ModalAddMenuProps) => {
         } as MenuType),
       );
 
-      axios.post("https://arustats.com/api/utils/cip/save-menu", urlencoded, {
+      axios.post("http://localhost:3000/api/utils/cip/save-menu", urlencoded, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },

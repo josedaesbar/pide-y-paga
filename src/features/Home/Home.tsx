@@ -27,7 +27,7 @@ export const Home = () => {
   const getMenus = async () => {
     try {
       setIsLoading(true);
-      const saveResponse = await axios.get("https://arustats.com/api/utils/cip/get-menus");
+      const saveResponse = await axios.get("http://localhost:3000/api/utils/cip/get-menus");
 
       console.log(saveResponse);
       dispatch(A_SET_MENU(saveResponse.data));
